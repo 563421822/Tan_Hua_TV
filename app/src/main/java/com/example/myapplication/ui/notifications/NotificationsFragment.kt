@@ -24,7 +24,7 @@ class NotificationsFragment : Fragment() {
         val root: View = binding.root
         webView = binding.webView
         // 启用JavaScript（可选，如果需要）
-        webView.settings.javaScriptEnabled = false
+        webView.settings.javaScriptEnabled = true
         Toast.makeText(context,"开通会员后观看", Toast.LENGTH_SHORT).show()
         // 设置WebViewClient以便在WebView内部打开链接，而不是使用默认的浏览器
         webView.webViewClient = WebViewClient()
