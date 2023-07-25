@@ -1,11 +1,15 @@
 package com.example.myapplication.ui.home
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
@@ -13,6 +17,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentHomeBinding
+import java.util.Calendar
 
 
 class HomeFragment : Fragment() {
@@ -28,22 +33,44 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        webView = binding.webView
+        webView = binding.webView.apply { setOnLongClickListener { true } }
         progressBar = root.findViewById(R.id.progressBar)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
-        webView.settings.mediaPlaybackRequiresUserGesture = false
-//        Toast.makeText(context, "开通会员后观看", Toast.LENGTH_SHORT).show()
+        webView.settings.mediaPlaybackRequiresUserGesture = true
         // 设置WebViewClient，用于处理页面跳转、加载等事件
-        webView.webViewClient = WebViewClient()
-        // 设置WebChromeClient，用于监听加载进度变化
-        webView.webChromeClient = object : WebChromeClient() {
-            override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                progressBar.visibility = if (newProgress == 100) View.GONE else View.VISIBLE
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                progressBar.visibility = View.GONE
+            }
+            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                if (error!!.errorCode == -2) view?.loadUrl("file:///android_asset/error_page.html");
             }
         }
-        // 加载URL
-        webView.loadUrl("https://www.youtube.com/shorts")
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val url =
+            if (hour in 6..18) "https://www.youtube.com/shorts" else "https://www.chaturbate.com"
+        webView.loadUrl(url)
+        webView.isFocusableInTouchMode = true
+        webView.requestFocus()
+        var start: Long = 0;
+        webView.setOnKeyListener { _, i, keyEvent ->
+            val currMill = System.currentTimeMillis();
+            if (keyEvent.action == KeyEvent.ACTION_UP && i == KeyEvent.KEYCODE_BACK) {
+                if (webView.canGoBack()) {
+                    webView.goBack()
+                    true
+                } else if (currMill - start < 2000) {
+                    requireActivity().finishAffinity()
+                    false
+                } else {
+                    start = currMill
+                    Toast.makeText(context, "再按一次退出应用", Toast.LENGTH_SHORT).show()
+                    true
+                }
+            } else false
+        }
         return root
     }
 

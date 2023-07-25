@@ -1,16 +1,14 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
+import android.view.Display
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -31,19 +29,17 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE or WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
         )
         shrdPre = MySharedPreferences(this)
-        val dataMap = mapOf(
-            "ANDROID_ID" to Settings.Secure.getString(
-                this.contentResolver,
-                Settings.Secure.ANDROID_ID
-            )
-        )
-        shrdPre.saveMultipleData(dataMap)
+        val data = shrdPre.getData("activated")
         binding = ActivityMainBinding.inflate(layoutInflater)
+        if (data.isEmpty()) binding.maskView.visibility = View.GONE
         setContentView(binding.root)
+        binding.maskView.setOnClickListener {
+            Toast.makeText(this, "请先开通会员", Toast.LENGTH_SHORT).show()
+        }
         val navView = binding.navView
-        val navHostFragment =
+        val navHstFrgmnt =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        val navController = navHostFragment.navController
+        val navController = navHstFrgmnt.navController
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
