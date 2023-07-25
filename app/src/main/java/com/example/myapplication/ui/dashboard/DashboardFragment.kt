@@ -1,6 +1,8 @@
 package com.example.myapplication.ui.dashboard
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,7 @@ class DashboardFragment : Fragment() {
 
     private val binding get() = _binding!!
 
+    @SuppressLint("HardwareIds")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,10 +28,10 @@ class DashboardFragment : Fragment() {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-/*        val textView: TextView = binding.textDashboard
+        val textView: TextView = binding.textDashboard
         dashboardViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }*/
+            textView.text = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID);
+        }
         return root
     }
 
