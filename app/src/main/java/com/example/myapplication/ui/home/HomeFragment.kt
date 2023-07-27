@@ -24,7 +24,6 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -33,7 +32,6 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         webView = binding.webView.apply { setOnLongClickListener { true } }
-        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout)
         progressBar = root.findViewById(R.id.progressBar)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
@@ -41,8 +39,7 @@ class HomeFragment : Fragment() {
         // 添加需要允许的域名列表
         val allowedDomains = listOf("chaturbate.com", "youtube.com")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
-        webView.webViewClient =
-            WbViwClnt(allowedDomains, context, progressBar, swipeRefreshLayout)
+        webView.webViewClient = WbViwClnt(allowedDomains, context, progressBar, null)
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         webView.loadUrl(if (hour in 6..18) "https://www.youtube.com/shorts" else "https://www.chaturbate.com")

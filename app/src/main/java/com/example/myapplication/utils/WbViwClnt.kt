@@ -17,7 +17,7 @@ open class WbViwClnt(
     private val allowedDomains: List<String>,
     private val context: Context?,
     private val progressBar: ProgressBar,
-    private val swipeRefreshLayout: SwipeRefreshLayout
+    private val swipeRefreshLayout: SwipeRefreshLayout?
 ) : WebViewClient() {
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
         return try {
@@ -32,13 +32,14 @@ open class WbViwClnt(
     }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-        progressBar.visibility = if (swipeRefreshLayout.isRefreshing) View.GONE else View.VISIBLE
+        progressBar.visibility =
+            if (swipeRefreshLayout?.isRefreshing == true) View.GONE else View.VISIBLE
     }
 
     override fun onPageFinished(view: WebView?, url: String?) {
         progressBar.visibility = View.GONE
         // 页面加载完成后停止下拉刷新
-        swipeRefreshLayout.isRefreshing = false
+        swipeRefreshLayout?.isRefreshing = false
     }
 
     override fun onReceivedError(
