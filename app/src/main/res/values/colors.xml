@@ -7,7 +7,5 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <!-- 选中状态的背景色 -->
     <color name="selector_text_color">@xml/selector_text_color</color>
-    <!-- 未选中状态的边框颜色 -->
 </resources>
