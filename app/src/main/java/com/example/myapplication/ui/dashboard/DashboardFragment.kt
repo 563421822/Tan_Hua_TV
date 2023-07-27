@@ -28,10 +28,10 @@ class DashboardFragment : Fragment() {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
+       /* val textView: TextView = binding.textDashboard
         dashboardViewModel.text.observe(viewLifecycleOwner) {
             textView.text = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID);
-        }
+        }*/
         return root
     }
 
