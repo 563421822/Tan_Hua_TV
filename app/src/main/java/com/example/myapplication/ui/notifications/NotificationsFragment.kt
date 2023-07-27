@@ -33,7 +33,7 @@ class NotificationsFragment : Fragment() {
     ): View {
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        webView = binding.webView
+        webView = binding.webView.apply { setOnLongClickListener { true } }
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
@@ -44,13 +44,15 @@ class NotificationsFragment : Fragment() {
         val allowedDomains = listOf("xvideos.com")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
         webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?, request: WebResourceRequest?
+            ): Boolean {
                 val url = request?.url.toString()
                 try {
                     // 解析 URL 获取域名
                     val domain = java.net.URL(url).host
                     allowedDomains.forEach {
-                       if (domain.contains(it)) return false
+                        if (domain.contains(it)) return false
                     }
                     Toast.makeText(context, "当前域名为$domain,禁止访问", Toast.LENGTH_SHORT).show()
                     return true

@@ -25,11 +25,11 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE or WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
             WindowManager.LayoutParams.FLAG_SECURE or WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
         )
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         shrdPre = MySharedPreferences(this)
         val data = shrdPre.getData("activated")
-        binding = ActivityMainBinding.inflate(layoutInflater)
         if (data.isEmpty()) binding.maskView.visibility = View.GONE
-        setContentView(binding.root)
         binding.maskView.setOnClickListener {
             Toast.makeText(this, "请先开通会员", Toast.LENGTH_SHORT).show()
         }

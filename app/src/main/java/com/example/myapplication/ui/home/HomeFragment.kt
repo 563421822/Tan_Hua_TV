@@ -33,7 +33,7 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        webView = binding.webView
+        webView = binding.webView.apply { setOnLongClickListener { true } }
         progressBar = root.findViewById(R.id.progressBar)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
@@ -42,7 +42,9 @@ class HomeFragment : Fragment() {
         val allowedDomains = listOf("chaturbate.com", "youtube.com")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
         webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?, request: WebResourceRequest?
+            ): Boolean {
                 val url = request?.url.toString()
                 try {
                     // 解析 URL 获取域名
@@ -59,13 +61,18 @@ class HomeFragment : Fragment() {
                 // 域名在允许列表中，继续加载
                 return false
             }
-                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 progressBar.visibility = View.VISIBLE
             }
+
             override fun onPageFinished(view: WebView?, url: String?) {
                 progressBar.visibility = View.GONE
             }
-            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+
+            override fun onReceivedError(
+                view: WebView?, request: WebResourceRequest?, error: WebResourceError?
+            ) {
                 if (error!!.errorCode == -2) view?.loadUrl("file:///android_asset/error_page.html");
             }
         }
