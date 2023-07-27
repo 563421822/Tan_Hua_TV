@@ -38,9 +38,28 @@ class HomeFragment : Fragment() {
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
         webView.settings.mediaPlaybackRequiresUserGesture = true
+        // 添加需要允许的域名列表
+        val allowedDomains = listOf("chaturbate.com", "youtube.com")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
         webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                val url = request?.url.toString()
+                try {
+                    // 解析 URL 获取域名
+                    val domain = java.net.URL(url).host
+                    allowedDomains.forEach {
+                        if (domain.contains(it)) return false
+                    }
+                    Toast.makeText(context, "当前域名为$domain,禁止访问", Toast.LENGTH_SHORT).show()
+                    return true
+                } catch (e: java.net.MalformedURLException) {
+                    // 处理 URL 解析异常
+                    e.printStackTrace()
+                }
+                // 域名在允许列表中，继续加载
+                return false
+            }
+                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 progressBar.visibility = View.VISIBLE
             }
             override fun onPageFinished(view: WebView?, url: String?) {

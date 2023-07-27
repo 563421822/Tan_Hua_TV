@@ -12,6 +12,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.myapplication.R
@@ -39,12 +40,26 @@ class NotificationsFragment : Fragment() {
         webView.settings.mediaPlaybackRequiresUserGesture = true
         // 设置WebViewClient，用于处理页面跳转、加载等事件
         progressBar = root.findViewById(R.id.progressBar)
+        // 添加需要允许的域名列表
+        val allowedDomains = listOf("xvideos.com")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
         webView.webViewClient = object : WebViewClient() {
-            @Deprecated("Deprecated in Java")
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                view.loadUrl(url)
-                return true
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                val url = request?.url.toString()
+                try {
+                    // 解析 URL 获取域名
+                    val domain = java.net.URL(url).host
+                    allowedDomains.forEach {
+                       if (domain.contains(it)) return false
+                    }
+                    Toast.makeText(context, "当前域名为$domain,禁止访问", Toast.LENGTH_SHORT).show()
+                    return true
+                } catch (e: java.net.MalformedURLException) {
+                    // 处理 URL 解析异常
+                    e.printStackTrace()
+                }
+                // 域名在允许列表中，继续加载
+                return false
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
