@@ -40,6 +40,9 @@ class HomeFragment : Fragment() {
         webView.settings.mediaPlaybackRequiresUserGesture = true
         // 设置WebViewClient，用于处理页面跳转、加载等事件
         webView.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                progressBar.visibility = View.VISIBLE
+            }
             override fun onPageFinished(view: WebView?, url: String?) {
                 progressBar.visibility = View.GONE
             }
@@ -49,9 +52,7 @@ class HomeFragment : Fragment() {
         }
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val url =
-            if (hour in 6..18) "https://www.youtube.com/shorts" else "https://www.chaturbate.com"
-        webView.loadUrl(url)
+        webView.loadUrl(if (hour in 6..18) "https://www.youtube.com/shorts" else "https://www.chaturbate.com")
         webView.isFocusableInTouchMode = true
         webView.requestFocus()
         var start: Long = 0;
