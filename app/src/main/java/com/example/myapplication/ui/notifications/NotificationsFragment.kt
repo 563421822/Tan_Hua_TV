@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentNotificationsBinding
+import java.net.URL
 
 
 class NotificationsFragment : Fragment() {
@@ -49,12 +50,10 @@ class NotificationsFragment : Fragment() {
             ): Boolean {
                 val url = request?.url.toString()
                 try {
-                    // 解析 URL 获取域名
-                    val domain = java.net.URL(url).host
                     allowedDomains.forEach {
-                        if (domain.contains(it)) return false
+                        if (URL(url).host.contains(it)) return false
                     }
-                    Toast.makeText(context, "当前域名为$domain,禁止访问", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "请勿轻信网页中的广告", Toast.LENGTH_SHORT).show()
                     return true
                 } catch (e: java.net.MalformedURLException) {
                     // 处理 URL 解析异常
