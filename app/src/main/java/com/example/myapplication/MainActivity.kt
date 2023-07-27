@@ -12,13 +12,14 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.utils.MySharedPreferences
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     lateinit var shrdPre: MySharedPreferences
 
-    @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFlags(
@@ -36,11 +37,13 @@ class MainActivity : AppCompatActivity() {
         val navHstFrgmnt =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHstFrgmnt.navController
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            )
+        val set = setOf(
+            R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
         )
+        set.forEach {
+            findViewById<BottomNavigationItemView>(it).setOnLongClickListener { true }
+        }
+        val appBarConfiguration = AppBarConfiguration(set)
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
     }
