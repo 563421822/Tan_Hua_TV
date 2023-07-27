@@ -33,7 +33,7 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        webView = binding.webView.apply { setOnLongClickListener { true } }
+        webView = binding.webView
         progressBar = root.findViewById(R.id.progressBar)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true

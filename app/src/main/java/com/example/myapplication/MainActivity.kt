@@ -31,12 +31,11 @@ class MainActivity : AppCompatActivity() {
         shrdPre = MySharedPreferences(this)
         val data = shrdPre.getData("activated")
         binding = ActivityMainBinding.inflate(layoutInflater)
-        if (data.isEmpty()) binding.maskView.visibility = View.GONE
+        if (data.isEmpty()) binding.maskView.visibility = View.INVISIBLE
         setContentView(binding.root)
         binding.maskView.setOnClickListener {
             Toast.makeText(this, "请先开通会员", Toast.LENGTH_SHORT).show()
         }
-        val navView = binding.navView
         val navHstFrgmnt =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHstFrgmnt.navController
@@ -46,6 +45,6 @@ class MainActivity : AppCompatActivity() {
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        binding.navView.setupWithNavController(navController)
     }
 }

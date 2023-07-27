@@ -3,4 +3,5 @@
     <string name="title_home">首页</string>
     <string name="title_dashboard">个人中心</string>
     <string name="title_notifications">Xvideos</string>
+    <string name="open_prompt">开通会员后观看</string>
 </resources>
