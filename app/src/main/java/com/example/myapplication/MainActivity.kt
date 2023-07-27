@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         shrdPre = MySharedPreferences(this)
         val data = shrdPre.getData("activated")
         binding = ActivityMainBinding.inflate(layoutInflater)
-        if (data.isEmpty()) binding.maskView.visibility = View.INVISIBLE
+        if (data.isEmpty()) binding.maskView.visibility = View.GONE
         setContentView(binding.root)
         binding.maskView.setOnClickListener {
             Toast.makeText(this, "请先开通会员", Toast.LENGTH_SHORT).show()
