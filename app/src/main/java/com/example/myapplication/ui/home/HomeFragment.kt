@@ -1,23 +1,19 @@
 package com.example.myapplication.ui.home
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentHomeBinding
-import java.net.URL
+import com.example.myapplication.utils.WbViwClnt
 import java.util.Calendar
 
 
@@ -27,6 +23,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -35,6 +32,7 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         webView = binding.webView.apply { setOnLongClickListener { true } }
+        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout)
         progressBar = root.findViewById(R.id.progressBar)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
@@ -42,39 +40,8 @@ class HomeFragment : Fragment() {
         // 添加需要允许的域名列表
         val allowedDomains = listOf("chaturbate.com", "youtube.com")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(
-                view: WebView?, request: WebResourceRequest?
-            ): Boolean {
-                val url = request?.url.toString()
-                try {
-                    allowedDomains.forEach {
-                        if (URL(url).host.contains(it)) return false
-                    }
-                    Toast.makeText(context, "请勿轻信网页中的广告", Toast.LENGTH_SHORT).show()
-                    return true
-                } catch (e: java.net.MalformedURLException) {
-                    // 处理 URL 解析异常
-                    e.printStackTrace()
-                }
-                // 域名在允许列表中，继续加载
-                return false
-            }
-
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                progressBar.visibility = View.VISIBLE
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                progressBar.visibility = View.GONE
-            }
-
-            override fun onReceivedError(
-                view: WebView?, request: WebResourceRequest?, error: WebResourceError?
-            ) {
-                if (error!!.errorCode == -2) view?.loadUrl("file:///android_asset/error_page.html");
-            }
-        }
+        webView.webViewClient =
+            WbViwClnt(allowedDomains, context, progressBar, swipeRefreshLayout)
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         webView.loadUrl(if (hour in 6..18) "https://www.youtube.com/shorts" else "https://www.chaturbate.com")

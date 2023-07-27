@@ -1,23 +1,18 @@
 package com.example.myapplication.ui.notifications
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentNotificationsBinding
-import java.net.URL
+import com.example.myapplication.utils.WbViwClnt
 
 
 class NotificationsFragment : Fragment() {
@@ -44,46 +39,8 @@ class NotificationsFragment : Fragment() {
         // 添加需要允许的域名列表
         val allowedDomains = listOf("xvideos.com")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(
-                view: WebView?, request: WebResourceRequest?
-            ): Boolean {
-                val url = request?.url.toString()
-                try {
-                    allowedDomains.forEach {
-                        if (URL(url).host.contains(it)) return false
-                    }
-                    Toast.makeText(context, "请勿轻信网页中的广告", Toast.LENGTH_SHORT).show()
-                    return true
-                } catch (e: java.net.MalformedURLException) {
-                    // 处理 URL 解析异常
-                    e.printStackTrace()
-                }
-                // 域名在允许列表中，继续加载
-                return false
-            }
-
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                progressBar.visibility =
-                    if (swipeRefreshLayout.isRefreshing) View.GONE else View.VISIBLE
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                progressBar.visibility = View.GONE
-                // 页面加载完成后停止下拉刷新
-                swipeRefreshLayout.isRefreshing = false
-            }
-
-            override fun onReceivedError(
-                view: WebView?, request: WebResourceRequest?, error: WebResourceError?
-            ) {
-                progressBar.visibility = View.GONE
-                val webViewState = Bundle()
-                webView.saveState(webViewState)
-                webViewState.getString("webViewState")
-                if (error!!.errorCode == -2) view?.loadUrl("file:///android_asset/error_page.html");
-            }
-        }
+        webView.webViewClient =
+            WbViwClnt(allowedDomains, context, progressBar, swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             // 刷新时重新加载WebView
             webView.reload()
