@@ -32,7 +32,6 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
         webView = root.findViewById<WebView?>(R.id.webView).apply { setOnLongClickListener { true } }
         swipeRefreshLayout= root.findViewById(R.id.swipeRefreshLayout)
-        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout)
         progressBar = root.findViewById(R.id.progressBar)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
