@@ -1,18 +1,19 @@
 package com.example.myapplication
 
+import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.databinding.ActivityMainBinding
-import com.example.myapplication.ui.activation.BlankFragment
 import com.example.myapplication.utils.MySharedPreferences
+import com.example.myapplication.utils.ToastUtils
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         val navView = binding.navView
         val findItem = navView.menu.findItem(R.id.navigation_dashboard)
 //        非空，已激活的状态
-        if (data.isEmpty()) {
+        if (data.isNotEmpty()) {
             binding.maskView.visibility = View.GONE
             findItem.setOnMenuItemClickListener { false }
         } else {
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             binding.maskView.setOnClickListener {
-                Toast.makeText(this, "请先开通会员", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast("请先开通会员", this)
             }
         }
         val navHstFrgmnt =

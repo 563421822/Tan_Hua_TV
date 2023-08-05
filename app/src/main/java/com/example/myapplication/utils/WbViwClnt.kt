@@ -15,7 +15,7 @@ import java.net.URL
 
 open class WbViwClnt(
     private val allowedDomains: List<String>,
-    private val context: Context?,
+    private val context: Context,
     private val progressBar: ProgressBar,
     private val swipeRefreshLayout: SwipeRefreshLayout
 ) : WebViewClient() {
@@ -24,7 +24,7 @@ open class WbViwClnt(
             for (allowedDomain in allowedDomains) {
                 if (URL(request.url.toString()).host.contains(allowedDomain)) return false
             }
-            Toast.makeText(context, "请勿轻信网页中的广告", Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast("请勿轻信网页中的广告",context)
             true
         } catch (e: MalformedURLException) {
             throw RuntimeException(e)
@@ -41,9 +41,7 @@ open class WbViwClnt(
         swipeRefreshLayout.isRefreshing = false
     }
 
-    override fun onReceivedError(
-        view: WebView?, request: WebResourceRequest?, error: WebResourceError?
-    ) {
+    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
         progressBar.visibility = View.GONE
         if (error!!.errorCode == -2) view?.loadUrl("file:///android_asset/error_page.html");
     }

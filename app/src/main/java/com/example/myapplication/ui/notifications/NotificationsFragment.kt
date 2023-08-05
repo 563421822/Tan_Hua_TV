@@ -39,7 +39,7 @@ class NotificationsFragment : Fragment() {
         // 添加需要允许的域名列表
         val allowedDomains = listOf("xvideos.com")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
-        webView.webViewClient = WbViwClnt(allowedDomains, context, progressBar, swipeRefreshLayout)
+        webView.webViewClient = WbViwClnt(allowedDomains, requireContext(), progressBar, swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             // 刷新时重新加载WebView
             webView.reload()

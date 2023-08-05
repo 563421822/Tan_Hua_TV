@@ -13,13 +13,14 @@ import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentHomeBinding
+import com.example.myapplication.utils.ToastUtils
 import com.example.myapplication.utils.WbViwClnt
 
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() =_binding!!
+    private val binding get() = _binding!!
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -30,8 +31,9 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        webView = root.findViewById<WebView?>(R.id.webView).apply { setOnLongClickListener { true } }
-        swipeRefreshLayout= root.findViewById(R.id.swipeRefreshLayout)
+        webView =
+            root.findViewById<WebView?>(R.id.webView).apply { setOnLongClickListener { true } }
+        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout)
         progressBar = root.findViewById(R.id.progressBar)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
@@ -39,7 +41,7 @@ class HomeFragment : Fragment() {
         // 添加需要允许的域名列表
         val allowedDomains = listOf("jable.tv")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
-        webView.webViewClient = WbViwClnt(allowedDomains, context, progressBar, swipeRefreshLayout)
+        webView.webViewClient = WbViwClnt(allowedDomains, requireContext(), progressBar, swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             // 刷新时重新加载WebView
             webView.reload()
@@ -59,7 +61,7 @@ class HomeFragment : Fragment() {
                     false
                 } else {
                     start = currMill
-                    Toast.makeText(context, "再按一次退出应用", Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast("再按一次退出应用", requireContext())
                     true
                 }
             } else false
