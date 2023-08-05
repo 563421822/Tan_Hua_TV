@@ -1,19 +1,19 @@
 package com.example.myapplication
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.ui.activation.BlankFragment
 import com.example.myapplication.utils.MySharedPreferences
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,9 +30,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         shrdPre = MySharedPreferences(this)
         val data = shrdPre.getData("activated")
-        if (data.isEmpty()) binding.maskView.visibility = View.GONE
-        binding.maskView.setOnClickListener {
-            Toast.makeText(this, "请先开通会员", Toast.LENGTH_SHORT).show()
+        val navView = binding.navView
+        val findItem = navView.menu.findItem(R.id.navigation_dashboard)
+//        非空，已激活的状态
+        if (data.isEmpty()) {
+            binding.maskView.visibility = View.GONE
+            findItem.setOnMenuItemClickListener { false }
+        } else {
+            binding.maskView.visibility = View.VISIBLE
+            findItem.setOnMenuItemClickListener {
+                supportActionBar?.hide()
+                setContentView(R.layout.fragment_blank)
+                true
+            }
+            binding.maskView.setOnClickListener {
+                Toast.makeText(this, "请先开通会员", Toast.LENGTH_SHORT).show()
+            }
         }
         val navHstFrgmnt =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
@@ -45,6 +58,6 @@ class MainActivity : AppCompatActivity() {
         }
         val appBarConfiguration = AppBarConfiguration(set)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        binding.navView.setupWithNavController(navController)
+        navView.setupWithNavController(navController)
     }
 }

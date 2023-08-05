@@ -14,16 +14,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentHomeBinding
 import com.example.myapplication.utils.WbViwClnt
-import java.net.URL
-import java.util.Calendar
 
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() =_binding!!
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -31,18 +30,22 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        webView = binding.webView.apply { setOnLongClickListener { true } }
+        webView = root.findViewById<WebView?>(R.id.webView).apply { setOnLongClickListener { true } }
+        swipeRefreshLayout= root.findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout)
         progressBar = root.findViewById(R.id.progressBar)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
         webView.settings.mediaPlaybackRequiresUserGesture = true
         // 添加需要允许的域名列表
-        val allowedDomains = listOf("chaturbate.com", "youtube.com")
+        val allowedDomains = listOf("jable.tv")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
-        webView.webViewClient = WbViwClnt(allowedDomains, context, progressBar, null)
-        val calendar = Calendar.getInstance()
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        webView.loadUrl(if (hour in 6..18) "https://www.youtube.com/shorts" else "https://www.chaturbate.com")
+        webView.webViewClient = WbViwClnt(allowedDomains, context, progressBar, swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            // 刷新时重新加载WebView
+            webView.reload()
+        }
+        webView.loadUrl("https://jable.tv/")
         webView.isFocusableInTouchMode = true
         webView.requestFocus()
         var start: Long = 0;

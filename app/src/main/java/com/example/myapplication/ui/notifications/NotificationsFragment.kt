@@ -29,8 +29,8 @@ class NotificationsFragment : Fragment() {
     ): View {
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        webView = binding.webView.apply { setOnLongClickListener { true } }
-        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout)
+        webView = root.findViewById<WebView?>(R.id.webView).apply { setOnLongClickListener { true } }
+        swipeRefreshLayout= root.findViewById(R.id.swipeRefreshLayout)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
         webView.settings.mediaPlaybackRequiresUserGesture = true

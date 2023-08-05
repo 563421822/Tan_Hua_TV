@@ -7,4 +7,6 @@
     <string name="activate_member">激活会员</string>
     <string name="activate_now">立即激活</string>
     <string name="membership_description">尊敬的会员用户，您可以点击下方按钮激活会员资格。</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
