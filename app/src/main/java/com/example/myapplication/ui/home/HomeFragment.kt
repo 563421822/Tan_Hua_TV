@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.myapplication.R
@@ -18,7 +17,6 @@ import com.example.myapplication.utils.WbViwClnt
 
 
 class HomeFragment : Fragment() {
-
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var webView: WebView
@@ -31,8 +29,7 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        webView =
-            root.findViewById<WebView?>(R.id.webView).apply { setOnLongClickListener { true } }
+        webView = root.findViewById<WebView>(R.id.webView).apply { setOnLongClickListener { true } }
         swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout)
         progressBar = root.findViewById(R.id.progressBar)
         // 启用JavaScript（可选，如果需要）
@@ -41,12 +38,14 @@ class HomeFragment : Fragment() {
         // 添加需要允许的域名列表
         val allowedDomains = listOf("jable.tv")
         // 设置WebViewClient，用于处理页面跳转、加载等事件
-        webView.webViewClient = WbViwClnt(allowedDomains, requireContext(), progressBar, swipeRefreshLayout)
+        webView.webViewClient =
+            WbViwClnt(allowedDomains, requireContext(), progressBar, swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             // 刷新时重新加载WebView
             webView.reload()
         }
-        webView.loadUrl("https://jable.tv/")
+        savedInstanceState?.getString("url")?.let { webView.loadUrl(it) }
+        if (savedInstanceState == null) webView.loadUrl("https://jable.tv/")
         webView.isFocusableInTouchMode = true
         webView.requestFocus()
         var start: Long = 0;

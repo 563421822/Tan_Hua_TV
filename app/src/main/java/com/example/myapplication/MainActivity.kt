@@ -16,7 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    lateinit var shrdPre: MySharedPreferences
+    private lateinit var shrdPre: MySharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,12 +26,24 @@ class MainActivity : AppCompatActivity() {
         )
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        shrdPre = MySharedPreferences(this)
-        val data = shrdPre.getData("activated")
         val navView = binding.navView
         val findItem = navView.menu.findItem(R.id.navigation_dashboard)
+        val fragmentManager = supportFragmentManager
+        val navHstFrgmnt =
+            fragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navController = navHstFrgmnt.navController
+        val set = setOf(
+            R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+        )
+        set.forEach {
+            findViewById<BottomNavigationItemView>(it).setOnLongClickListener { true }
+        }
+        val appBarConfiguration = AppBarConfiguration(set)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
+        shrdPre = MySharedPreferences(this)
 //        非空，已激活的状态
-        if (data.isNotEmpty()) {
+        if (shrdPre.getData("activated").isEmpty()) {
             binding.maskView.visibility = View.GONE
             findItem.setOnMenuItemClickListener { false }
         } else {
@@ -45,17 +57,5 @@ class MainActivity : AppCompatActivity() {
                 ToastUtils.showToast("请先开通会员", this)
             }
         }
-        val navHstFrgmnt =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        val navController = navHstFrgmnt.navController
-        val set = setOf(
-            R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-        )
-        set.forEach {
-            findViewById<BottomNavigationItemView>(it).setOnLongClickListener { true }
-        }
-        val appBarConfiguration = AppBarConfiguration(set)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
     }
 }
