@@ -30,23 +30,19 @@ class NotificationsFragment : Fragment() {
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
         webView = root.findViewById<WebView>(R.id.webView).apply { setOnLongClickListener { true } }
-        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout)
         // 启用JavaScript（可选，如果需要）
         webView.settings.javaScriptEnabled = true
         webView.settings.mediaPlaybackRequiresUserGesture = true
         // 设置WebViewClient，用于处理页面跳转、加载等事件
         progressBar = root.findViewById(R.id.progressBar)
-        // 添加需要允许的域名列表
-        // 设置WebViewClient，用于处理页面跳转、加载等事件
-        webView.webViewClient =
-            WbViwClnt(listOf("xvideos.com"), requireContext(), progressBar, swipeRefreshLayout)
+        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             // 刷新时重新加载WebView
             webView.reload()
         }
-        savedInstanceState?.getString("url")?.let { webView.loadUrl(it) }
-        if (savedInstanceState == null) webView.loadUrl("https://www.xvideos.com")
-        // 加载URL
+        // 设置WebViewClient，用于处理页面跳转、加载等事件
+        webView.webViewClient =
+            WbViwClnt(listOf("xvideos.com"), requireContext(), progressBar, swipeRefreshLayout)
         webView.isFocusableInTouchMode = true
         webView.requestFocus()
         webView.setOnKeyListener { _, i, keyEvent ->
@@ -57,12 +53,14 @@ class NotificationsFragment : Fragment() {
                 } else false
             } else false
         }
+        if (savedInstanceState != null) webView.restoreState(savedInstanceState)
+        else webView.loadUrl("https://www.xvideos.com")
         return root
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("url", webView.url.toString())
+        webView.saveState(outState)
     }
 
     override fun onDestroyView() {

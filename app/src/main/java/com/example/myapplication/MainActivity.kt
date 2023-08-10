@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var shrdPre: MySharedPreferences
-
+    private lateinit var dashboard: MenuItem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFlags(
@@ -27,14 +28,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val navView = binding.navView
-        val findItem = navView.menu.findItem(R.id.navigation_dashboard)
+        dashboard = navView.menu.findItem(R.id.navigation_dashboard)
         val fragmentManager = supportFragmentManager
         val navHstFrgmnt =
             fragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHstFrgmnt.navController
-        val set = setOf(
-            R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-        )
+        val set =
+            setOf(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
         set.forEach {
             findViewById<BottomNavigationItemView>(it).setOnLongClickListener { true }
         }
@@ -43,12 +43,12 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
         shrdPre = MySharedPreferences(this)
 //        非空，已激活的状态
-        if (shrdPre.getData("activated").isEmpty()) {
+        if (shrdPre.getData("activated").isNotEmpty()) {
             binding.maskView.visibility = View.GONE
-            findItem.setOnMenuItemClickListener { false }
+            dashboard.setOnMenuItemClickListener { false }
         } else {
             binding.maskView.visibility = View.VISIBLE
-            findItem.setOnMenuItemClickListener {
+            dashboard.setOnMenuItemClickListener {
                 supportActionBar?.hide()
                 setContentView(R.layout.fragment_blank)
                 true
@@ -57,5 +57,18 @@ class MainActivity : AppCompatActivity() {
                 ToastUtils.showToast("请先开通会员", this)
             }
         }
+    }
+
+    fun onCloseClick(view: View) {
+        supportActionBar?.show()
+        setContentView(binding.root)
+    }
+
+    fun onActivate(view: View) {
+        shrdPre.saveData("activated", "true")
+        ToastUtils.showToast("激活成功", this)
+        onCloseClick(view)
+        binding.maskView.visibility = View.GONE
+        dashboard.setOnMenuItemClickListener { false }
     }
 }
