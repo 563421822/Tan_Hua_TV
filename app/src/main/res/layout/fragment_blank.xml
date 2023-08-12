@@ -125,20 +125,15 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <LinearLayout
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottie_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#30000000"
-            android:clickable="true"
-            android:focusable="true"
-            android:visibility="gone"
-            app:lottie_autoPlay="false"
-            app:lottie_fileName="animation_ll801tv5.json"
-            app:lottie_loop="true" />
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:background="#30000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:lottie_autoPlay="false"
+        app:lottie_fileName="animation_ll801tv5.json"
+        app:lottie_loop="true" />
 </FrameLayout>
