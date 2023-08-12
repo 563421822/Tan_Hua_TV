@@ -4,7 +4,6 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/close"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:contentDescription="@string/activate_member"
@@ -42,6 +41,7 @@
             android:textSize="16sp" />
 
         <RadioGroup
+            android:id="@+id/activate_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -49,7 +49,7 @@
             android:padding="16dp">
 
             <RadioButton
-                android:id="@+id/radioButton1"
+                android:id="@+id/radioBtn1"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
                 android:layout_marginEnd="4dp"
@@ -57,13 +57,14 @@
                 android:background="@drawable/selector_square"
                 android:button="@null"
                 android:checked="false"
+                android:tag="7"
                 android:text="￥4/7天"
                 android:textAlignment="center"
                 android:textColor="@color/selector_text_color"
                 android:textSize="20sp" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/radioBtn2"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
                 android:layout_marginEnd="4dp"
@@ -71,24 +72,45 @@
                 android:background="@drawable/selector_square"
                 android:button="@null"
                 android:checked="true"
+                android:tag="30"
                 android:text="￥9.9/30天"
                 android:textAlignment="center"
                 android:textColor="@color/selector_text_color"
                 android:textSize="20sp" />
 
             <RadioButton
-                android:id="@+id/radioButton3"
+                android:id="@+id/radioBtn3"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_square"
                 android:button="@null"
                 android:checked="false"
-                android:text="￥199/永久"
+                android:tag="365"
+                android:text="￥199/365天"
                 android:textAlignment="center"
                 android:textColor="@color/selector_text_color"
                 android:textSize="20sp" />
         </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/expired_layout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="上次到期时间：" />
+
+            <TextView
+                android:id="@+id/last_expired"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/activate"

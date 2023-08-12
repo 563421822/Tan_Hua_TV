@@ -24,7 +24,7 @@ class MySharedPreferences(context: Context) {
         editor.apply()
     }
 
-    fun getData(key: String): String {
-        return sharedPreferences.getString(key, "") ?: ""
+    fun getData(key: String): String? {
+        return sharedPreferences.getString(key, null)
     }
 }

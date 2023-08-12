@@ -14,7 +14,7 @@ class ToastUtils {
                 isToastShowing = true
                 Handler().postDelayed({
                     isToastShowing = false
-                }, 3000L)
+                }, 2500L)
             }
         }
     }
