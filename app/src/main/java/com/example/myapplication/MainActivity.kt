@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.view.MenuItem
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.airbnb.lottie.LottieAnimationView
 import com.example.myapplication.common.Constant
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.utils.MySharedPreferences
@@ -55,11 +57,11 @@ class MainActivity : AppCompatActivity() {
                 findViewById<LinearLayout>(R.id.expired_layout).visibility = View.VISIBLE
                 findViewById<TextView>(R.id.last_expired).text =
                     shrdPre.getData(Constant.EXPIRE_TIME)
-                findViewById<Button>(R.id.activate).text = "立即续费"
+                findViewById<Button>(R.id.activate).text = Constant.IMMEDIATE_RENEWAL
             }
             true
         }
-        binding.maskView.setOnClickListener { ToastUtils.showToast("请先激活会员", this) }
+        binding.maskView.setOnClickListener { ToastUtils.showToast(Constant.ACTIVATE_FIRST, this) }
     }
 
     private fun checkMembershipStatus() {
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             shrdPre.getData(Constant.EXPIRE_TIME)?.let { LocalDateTime.parse(it) } ?: now
 
         if (now > expireTime) {
-            ToastUtils.showToast("您的会员已到期", this)
+            ToastUtils.showToast(Constant.MEMBER_EXPIRED, this)
             dealNonActivated()
         } else {
             binding.maskView.visibility = View.GONE
@@ -80,9 +82,9 @@ class MainActivity : AppCompatActivity() {
         val navView = binding.navView
         dashboard = navView.menu.findItem(R.id.navigation_dashboard)
         val fragmentManager = supportFragmentManager
-        val navHstFrgmnt =
+        val NavFrag =
             fragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        val navController = navHstFrgmnt.navController
+        val navController = NavFrag.navController
         val set =
             setOf(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
         set.forEach {
@@ -99,6 +101,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onActivate(view: View) {
+        findViewById<Button>(R.id.activate).let {
+            it.text = Constant.PAYING
+            it.isEnabled = false
+        }
+        val lottieView = findViewById<LottieAnimationView>(R.id.lottie_view)
+        lottieView.visibility = View.VISIBLE
+        lottieView.playAnimation()
         val activateItem = findViewById<RadioGroup>(R.id.activate_item)
         val chkdItem = activateItem.checkedRadioButtonId
         val acvtPeriod = findViewById<RadioButton>(chkdItem).tag.toString()
@@ -120,10 +129,15 @@ class MainActivity : AppCompatActivity() {
             Constant.ACTIVATED to true.toString(),
             Constant.TOKEN to md5Hex
         )
-
         shrdPre.saveMultipleData(dataMap)
-        ToastUtils.showToast("激活成功", this)
-        onCloseClick(view)
+        val handler = Handler().let {
+            it.postDelayed({
+                // 延迟 3000 毫秒（3 秒）后执行取消动画操作
+                ToastUtils.showToast(Constant.ACTIVATE_SUCCEED, this)
+                lottieView.cancelAnimation()
+                onCloseClick(view)
+            }, 5000)
+        }
         binding.maskView.visibility = View.GONE
         dashboard.setOnMenuItemClickListener { false }
     }

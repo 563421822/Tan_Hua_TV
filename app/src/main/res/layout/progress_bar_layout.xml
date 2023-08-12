@@ -11,12 +11,11 @@
             android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <ProgressBar xmlns:tools="http://schemas.android.com/tools"
+    <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        tools:ignore="MissingConstraints" />
+        android:layout_centerInParent="true" />
 </merge>
 
 
