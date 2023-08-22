@@ -26,6 +26,7 @@ import java.security.MessageDigest
 import java.time.Duration
 import java.time.LocalDateTime
 import kotlin.properties.Delegates
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -73,6 +74,10 @@ class MainActivity : AppCompatActivity() {
             ToastUtils.showToast(Constant.MEMBER_EXPIRED, this)
             dealNonActivated()
         } else {
+            shrdPre.saveData(
+                Constant.RES_MATURITY,
+                Duration.between(now, expireTime).toDays().toString() + "天"
+            )
             binding.maskView.visibility = View.GONE
             dashboard.setOnMenuItemClickListener { false }
         }
@@ -114,18 +119,16 @@ class MainActivity : AppCompatActivity() {
         val androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         val md5Hex = androidId.md5Hash()
         val now = LocalDateTime.now()
-        val expireTime =
-            shrdPre.getData(Constant.EXPIRE_TIME)?.let { LocalDateTime.parse(it) } ?: now
-        val daysDifference =
-            if (now > expireTime) acvtPeriod else (Duration.between(now, expireTime)
-                .toDays() + acvtPeriod.toByte()).toString()
+        val expireTime = shrdPre.getData(Constant.EXPIRE_TIME)
+            ?.let { LocalDateTime.parse(it).plusDays(acvtPeriod.toLong()) } ?: now.plusDays(
+            acvtPeriod.toLong()
+        )
+        val daysDifference = Duration.between(now, expireTime).toDays()
         val dataMap = mapOf(
             Constant.ANDROID_ID to androidId,
             Constant.ACVT_TIME to now.toString(),
             Constant.RES_MATURITY to "$daysDifference 天",
-            Constant.EXPIRE_TIME to if (now > expireTime) now.plusDays(acvtPeriod.toLong())
-                .toString()
-            else expireTime.plusDays(acvtPeriod.toLong()).toString(),
+            Constant.EXPIRE_TIME to expireTime.toString(),
             Constant.ACTIVATED to true.toString(),
             Constant.TOKEN to md5Hex
         )
@@ -136,7 +139,7 @@ class MainActivity : AppCompatActivity() {
                 ToastUtils.showToast(Constant.ACTIVATE_SUCCEED, this)
                 lottieView.cancelAnimation()
                 onCloseClick(view)
-            }, 5000)
+            }, Random.nextLong(3001) + 3000)
         }
         binding.maskView.visibility = View.GONE
         dashboard.setOnMenuItemClickListener { false }

@@ -87,8 +87,8 @@
                 android:background="@drawable/selector_square"
                 android:button="@null"
                 android:checked="false"
-                android:tag="365"
-                android:text="￥199/365天"
+                android:tag="180"
+                android:text="￥49/180天"
                 android:textAlignment="center"
                 android:textColor="@color/selector_text_color"
                 android:textSize="20sp" />
